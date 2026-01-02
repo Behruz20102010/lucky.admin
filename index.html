@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Bot - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .section h2 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .user-id {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .user-stars {
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .send-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .activity-log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #11998e;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .activity-time {
+            opacity: 0.6;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .close-modal-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                🎰 Lucky Bot
+                <span class="admin-badge">ADMIN PANEL</span>
+            </h1>
+            <div style="color: white;">
+                <div style="opacity: 0.7;">Admin:</div>
+                <div style="font-weight: bold;">Behruzbek Odilov</div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <h3>Jami Foydalanuvchilar</h3>
+                <div class="stat-value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <h3>Tarqatilgan Stars</h3>
+                <div class="stat-value" id="totalStarsGiven">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎁</div>
+                <h3>Ochilgan Cases</h3>
+                <div class="stat-value" id="totalCasesOpened">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <h3>Top Up So'rovlar</h3>
+                <div class="stat-value" id="totalTopUpRequests">0</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Users List -->
+            <div class="section">
+                <h2>👥 Foydalanuvchilar Ro'yxati</h2>
+                <input type="text" class="search-box" placeholder="🔍 Foydalanuvchi qidirish..." oninput="searchUsers(this.value)">
+                <div class="user-list" id="usersList"></div>
+            </div>
+
+            <!-- Right Panel -->
+            <div>
+                <!-- Add Stars Form -->
+                <div class="section" style="margin-bottom: 20px;">
+                    <h2>⭐ Stars Yuborish</h2>
+                    <div class="form-group">
+                        <label>Foydalanuvchi ID</label>
+                        <input type="number" id="userId" placeholder="12345">
+                    </div>
+                    <div class="form-group">
+                        <label>Stars Miqdori</label>
+                        <input type="number" id="starsAmount" placeholder="100">
+                    </div>
+                    <button class="submit-btn" onclick="sendStars()">📤 YUBORISH</button>
+                </div>
+
+                <!-- Add New User -->
+                <div class="section" style="margin-bottom: 20px;">
+                    <h2>➕ Yangi Foydalanuvchi</h2>
+                    <div class="form-group">
+                        <label>Ism</label>
+                        <input type="text" id="newUserName" placeholder="User nomi">
+                    </div>
+                    <div class="form-group">
+                        <label>Boshlang'ich Stars</label>
+                        <input type="number" id="newUserStars" placeholder="50">
+                    </div>
+                    <button class="submit-btn" onclick="addNewUser()">✅ QO'SHISH</button>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="section">
+                    <h2>📋 So'nggi Harakatlar</h2>
+                    <div class="activity-log" id="activityLog"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h3>✅ Muvaffaqiyatli!</h3>
+            <p id="successMessage" style="color: white; text-align: center; margin: 20px 0;"></p>
+            <button class="close-modal-btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - bu real loyihada database ga bog'lanadi
+        let users = [
+            { id: 12345, name: 'Ali', stars: 50, casesOpened: 5, totalWon: 150 },
+            { id: 67890, name: 'Vali', stars: 25, casesOpened: 3, totalWon: 75 },
+            { id: 11223, name: 'Sardor', stars: 100, casesOpened: 8, totalWon: 280 }
+        ];
+
+        let activityLog = [];
+        let stats = {
+            totalStarsGiven: 0,
+            totalCasesOpened: 0,
+            totalTopUpRequests: 0
+        };
+
+        function init() {
+            renderUsers();
+            updateStats();
+            renderActivityLog();
+        }
+
+        function renderUsers() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = users.map(user => `
+                <div class="user-item" data-id="${user.id}">
+                    <div class="user-info">
+                        <div class="user-avatar">${user.name.charAt(0)}</div>
+                        <div class="user-details">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-id">ID: ${user.id}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="user-stars">⭐ ${user.stars}</span>
+                        <button class="send-btn" onclick="quickSend(${user.id})">Yuborish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchUsers(query) {
+            const filtered = users.filter(u => 
+                u.name.toLowerCase().includes(query.toLowerCase()) || 
+                u.id.toString().includes(query)
+            );
+            
+            const usersList = document.getElementById('usersList');
+            if (filtered.length === 0) {
+                usersList.innerHTML = '<p style="color: white; text-align: center; opacity: 0.6;">Topilmadi</p>';
+                return;
+            }
+            
+            usersList.innerHTML = filtered.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-avatar">${user.name.charAt(0)}</div>
+                        <div class="user-details">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-id">ID: ${user.id}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="user-stars">⭐ ${user.stars}</span>
+                        <button class="send-btn" onclick="quickSend(${user.id})">Yuborish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function quickSend(userId) {
+            document.getElementById('userId').value = userId;
+            document.getElementById('starsAmount').focus();
+        }
+
+        function sendStars() {
+            const userId = parseInt(document.getElementById('userId').value);
+            const amount = parseInt(document.getElementById('starsAmount').value);
+
+            if (!userId || !amount || amount <= 0) {
+                alert('❌ Iltimos, to\'g\'ri ma\'lumot kiriting!');
+                return;
+            }
+
+            const user = users.find(u => u.id === userId);
+            if (!user) {
+                alert('❌ Foydalanuvchi topilmadi!');
+                return;
+            }
+
+            user.stars += amount;
+            stats.totalStarsGiven += amount;
+
+            addActivity(`⭐ ${user.name} ga ${amount} stars yuborildi`);
+            
+            document.getElementById('userId').value = '';
+            document.getElementById('starsAmount').value = '';
+            
+            renderUsers();
+            updateStats();
+            
+            showSuccessModal(`✅ ${user.name} ga ${amount} stars yuborildi!`);
+        }
+
+        function addNewUser() {
+            const name = document.getElementById('newUserName').value;
+            const stars = parseInt(document.getElementById('newUserStars').value) || 0;
+
+            if (!name) {
+                alert('❌ Ism kiriting!');
+                return;
+            }
+
+            const newUser = {
+                id: Math.floor(Math.random() * 100000),
+                name: name,
+                stars: stars,
+                casesOpened: 0,
+                totalWon: 0
+            };
+
+            users.push(newUser);
+            
+            addActivity(`➕ Yangi foydalanuvchi: ${name} (ID: ${newUser.id})`);
+            
+            document.getElementById('newUserName').value = '';
+            document.getElementById('newUserStars').value = '';
+            
+            renderUsers();
+            updateStats();
+            
+            showSuccessModal(`✅ ${name} qo'shildi! ID: ${newUser.id}`);
+        }
+
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalStarsGiven').textContent = stats.totalStarsGiven;
+            document.getElementById('totalCasesOpened').textContent = users.reduce((sum, u) => sum + u.casesOpened, 0);
+            document.getElementById('totalTopUpRequests').textContent = stats.totalTopUpRequests;
+        }
+
+        function addActivity(message) {
+            const time = new Date().toLocaleTimeString('uz-UZ');
+            activityLog.unshift({ message, time });
+            if (activityLog.length > 20) activityLog.pop();
+            renderActivityLog();
+        }
+
+        function renderActivityLog() {
+            const log = document.getElementById('activityLog');
+            if (activityLog.length === 0) {
+                log.innerHTML = '<p style="color: white; opacity: 0.6; text-align: center;">Hali harakatlar yo\'q</p>';
+                return;
+            }
+            
+            log.innerHTML = activityLog.map(item => `
+                <div class="activity-item">
+                    ${item.message}
+                    <div class="activity-time">${item.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function showSuccessModal(message) {
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Initialize
+        init();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Bu yerda real database dan ma'lumotlar kelishi kerak
+        }, 5000);
+    </script>
+</body>
+</html>
